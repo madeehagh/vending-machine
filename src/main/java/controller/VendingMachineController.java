@@ -5,15 +5,16 @@ import request.Beverages;
 import response.InventoryResponse;
 import response.VendingMachineResponse;
 import response.VendingMachineResponseWrapper;
-import service.VendingMachine;
-import service.VendingMachineImpl;
+import service.VendingMachineService;
+import service.VendingMachineServiceImpl;
 import util.VendingUtil;
 
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class VendingMachineController {
 
-    VendingMachine vendingMachine = new VendingMachineImpl();
+    VendingMachineService vendingMachineService = new VendingMachineServiceImpl();
 
     public VendingMachineController() {}
 
@@ -24,8 +25,10 @@ public class VendingMachineController {
     public boolean initializeSystem(JsonNode outlets) {
         if (!VendingUtil.isObjectNullOrEmpty(outlets)) {
             Map<String, String> result = VendingUtil.convertJsonNodetoMap(outlets);
+            int count = 0;
             if (null != result)
-                return vendingMachine.setNoOfUnit(Integer.parseInt(result.get("count_n")));
+                count = Integer.parseInt(result.get("count_n"));
+                return vendingMachineService.setNoOfUnit(count);
         }
         return false;
     }
@@ -38,7 +41,7 @@ public class VendingMachineController {
         if (!VendingUtil.isObjectNullOrEmpty(total_items_quantity)) {
             Map<String, String> result = VendingUtil.convertJsonNodetoMap(total_items_quantity);
             if (null != result)
-                return vendingMachine.createInventory(result);
+                return vendingMachineService.createInventory(result);
         }
         return false;
     }
@@ -47,9 +50,9 @@ public class VendingMachineController {
      * This method perform order placement operation.
      * @param beverages
      */
-    public void placeOrder(Beverages beverages) {
+    public void placeOrder(Beverages beverages) throws ExecutionException, InterruptedException {
         if (null != beverages) {
-            VendingMachineResponseWrapper vendingMachineResponseWrapper = vendingMachine.placeOrder(beverages);
+            VendingMachineResponseWrapper vendingMachineResponseWrapper = vendingMachineService.placeOrder(beverages);
             processResponse(vendingMachineResponseWrapper);
         }
     }

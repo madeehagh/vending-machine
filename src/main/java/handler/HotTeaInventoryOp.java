@@ -2,7 +2,7 @@ package handler;
 
 import request.HotTea;
 import response.InventoryResponse;
-import model.Inventory;
+import util.Inventory;
 
 import java.util.HashMap;
 import java.util.Map;
