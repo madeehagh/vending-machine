@@ -1,8 +1,8 @@
 package handler;
 
-import model.GreenTea;
-import model.VendingMachineResponse;
-import util.Inventory;
+import request.GreenTea;
+import response.InventoryResponse;
+import model.Inventory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +16,7 @@ public class GreenTeaInventoryOp implements InventryOperation {
     }
 
     @Override
-    public VendingMachineResponse updateItem() {
+    public InventoryResponse updateItem() {
         Map<String, Integer> item = new HashMap<>();
         item.put("hot_water" , Integer.parseInt(greenTea.hot_water));
         item.put("ginger_syrup", Integer.parseInt(greenTea.ginger_syrup));

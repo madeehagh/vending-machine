@@ -5,13 +5,18 @@ import handler.BlackTeaInventoryOp;
 import handler.GreenTeaInventoryOp;
 import handler.HotCoffeeInventryOp;
 import handler.HotTeaInventoryOp;
-import model.Beverages;
-import model.VendingMachineResponse;
-import util.Inventory;
+import request.Beverages;
+import response.InventoryResponse;
+import response.VendingMachineResponse;
+import response.VendingMachineResponseWrapper;
+import model.Inventory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class VendingMachineImpl implements  VendingMachine{
+
     Inventory inventory;
     HotTeaInventoryOp hotTeaInventoryOp;
     HotCoffeeInventryOp hotCoffeeInventryOp;
@@ -23,109 +28,82 @@ public class VendingMachineImpl implements  VendingMachine{
     }
 
     @Override
-    public void createInventory(Map<String, String> inventories) {
-        inventory.createInventory(inventories);
+    public boolean createInventory(Map<String, String> inventories) {
+        return inventory.createInventory(inventories);
     }
 
     @Override
-    public void setNoOfUnit(int n) {
+    public boolean setNoOfUnit(int n) {
         inventory.setNoOfUnits(n);
+        return true;
     }
 
     @Override
-    public void placeOrder(Beverages beverages) {
+    public VendingMachineResponseWrapper placeOrder(Beverages beverages) {
+        VendingMachineResponseWrapper vendingMachineResponseWrapper = new VendingMachineResponseWrapper();
+        List<VendingMachineResponse> vendingMachineResponses = new ArrayList<>();
 
         if (null != beverages.getHot_tea()) {
-            prepareHotTea(beverages);
+            InventoryResponse inventoryResponse = prepareHotTea(beverages);
+            VendingMachineResponse vendingMachineResponse = new VendingMachineResponse();
+            vendingMachineResponse.setItem(Items.HOT_TEA.toString());
+            vendingMachineResponse.setInventoryResponse(inventoryResponse);
+            vendingMachineResponses.add(vendingMachineResponse);
         }
 
         if (null != beverages.getHot_coffee()) {
-            prepareHotCoffee(beverages);
+            InventoryResponse inventoryResponse = prepareHotCoffee(beverages);
+            VendingMachineResponse vendingMachineResponse = new VendingMachineResponse();
+            vendingMachineResponse.setItem(Items.HOT_COFFEE.toString());
+            vendingMachineResponse.setInventoryResponse(inventoryResponse);
+            vendingMachineResponses.add(vendingMachineResponse);
         }
 
         if (null != beverages.getBlack_tea()) {
-            prepareBlackTea(beverages);
+            InventoryResponse inventoryResponse = prepareBlackTea(beverages);
+            VendingMachineResponse vendingMachineResponse = new VendingMachineResponse();
+            vendingMachineResponse.setItem(Items.BLACK_TEA.toString());
+            vendingMachineResponse.setInventoryResponse(inventoryResponse);
+            vendingMachineResponses.add(vendingMachineResponse);
         }
 
         if (null != beverages.getGreenTea()) {
-            prepareGreenTea(beverages);
+            InventoryResponse inventoryResponse = prepareGreenTea(beverages);
+            VendingMachineResponse vendingMachineResponse = new VendingMachineResponse();
+            vendingMachineResponse.setItem(Items.GREEN_TEA.toString());
+            vendingMachineResponse.setInventoryResponse(inventoryResponse);
+            vendingMachineResponses.add(vendingMachineResponse);
         }
+        vendingMachineResponseWrapper.setVendingMachineResponseList(vendingMachineResponses);
+        return vendingMachineResponseWrapper;
     }
 
-    private void prepareGreenTea(Beverages beverages) {
-        boolean isPrepared;
-        boolean isInsufficient;
+    private InventoryResponse prepareGreenTea(Beverages beverages) {
+
         greenTeaInventoryOp = new GreenTeaInventoryOp(beverages.getGreenTea());
-        VendingMachineResponse vendingMachineResponse = greenTeaInventoryOp.updateItem();
-        isPrepared = vendingMachineResponse.isPrepared();
-        isInsufficient = vendingMachineResponse.isInSufficient();
-
-        if (isPrepared)
-            System.out.println(Items.GREEN_TEA + " is prepared");
-        else if (isInsufficient)
-            System.out.println(Items.GREEN_TEA.toString() + " can not be prepared because " +
-                    vendingMachineResponse.getItemUnavailable() + " is not sufficient");
-        else
-            System.out.println(Items.GREEN_TEA.toString() + " can not be prepared because " +
-                    vendingMachineResponse.getItemUnavailable() + " is not sufficient");
+        InventoryResponse inventoryResponse = greenTeaInventoryOp.updateItem();
+        return inventoryResponse;
     }
 
-    private void prepareBlackTea(Beverages beverages) {
-        boolean isPrepared;
-        boolean isInsufficient;
+    private InventoryResponse prepareBlackTea(Beverages beverages) {
         blackTeaInventoryOp = new BlackTeaInventoryOp(beverages.getBlack_tea());
-        VendingMachineResponse vendingMachineResponse = blackTeaInventoryOp.updateItem();
-        isPrepared = vendingMachineResponse.isPrepared();
-        isInsufficient = vendingMachineResponse.isInSufficient();
-        if (isPrepared)
-            System.out.println(Items.BLACK_TEA.toString() + " is prepared");
-        else if (isInsufficient)
-            System.out.println(Items.BLACK_TEA.toString() + " can not be prepared because " +
-                    vendingMachineResponse.getItemUnavailable() + " is not sufficient");
-        else
-            System.out.println(Items.BLACK_TEA.toString() + " can not be prepared because " +
-                    vendingMachineResponse.getItemUnavailable() + " is not available");
+        InventoryResponse inventoryResponse = blackTeaInventoryOp.updateItem();
+        return inventoryResponse;
     }
 
-    private void prepareHotCoffee(Beverages beverages) {
-        boolean isPrepared;
-        boolean isInsufficient;
+    private InventoryResponse prepareHotCoffee(Beverages beverages) {
         hotCoffeeInventryOp = new HotCoffeeInventryOp(beverages.getHot_coffee());
-        VendingMachineResponse vendingMachineResponse = hotCoffeeInventryOp.updateItem();
-        isPrepared = vendingMachineResponse.isPrepared();
-        isInsufficient = vendingMachineResponse.isInSufficient();
-
-        if (isPrepared)
-            System.out.println(Items.HOT_COFFEE.toString() + " is prepared");
-        else if (isInsufficient)
-            System.out.println(Items.HOT_COFFEE.toString() + " can not be prepared because " +
-                    vendingMachineResponse.getItemUnavailable() + " is not sufficient");
-        else
-            System.out.println(Items.HOT_COFFEE.toString() + " can not be prepared because " +
-                    vendingMachineResponse.getItemUnavailable() + " is not available");
+        InventoryResponse inventoryResponse = hotCoffeeInventryOp.updateItem();
+        return inventoryResponse;
     }
 
-    private void prepareHotTea(Beverages beverages) {
-        boolean isPrepared;
-        boolean isInsufficient;
+    private InventoryResponse prepareHotTea(Beverages beverages) {
         hotTeaInventoryOp = new HotTeaInventoryOp(beverages.getHot_tea());
-        VendingMachineResponse vendingMachineResponse = hotTeaInventoryOp.updateItem();
-        isPrepared = vendingMachineResponse.isPrepared();
-        isInsufficient = vendingMachineResponse.isInSufficient();
-
-        if (isPrepared)
-            System.out.println(Items.HOT_TEA.toString() + " is prepared");
-        else if(isInsufficient)
-            System.out.println(Items.HOT_TEA.toString() + " can not be prepared because " +
-                    vendingMachineResponse.getItemUnavailable() + " is not sufficient");
-        else
-            System.out.println(Items.HOT_TEA.toString() + " can not be prepared because " +
-                    vendingMachineResponse.getItemUnavailable() + " is not available");
+        InventoryResponse inventoryResponse = hotTeaInventoryOp.updateItem();
+       return inventoryResponse;
     }
 
     public boolean cancelOrder() {
         return false;
     }
-
-
 }

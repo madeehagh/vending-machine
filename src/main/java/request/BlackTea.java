@@ -1,14 +1,12 @@
-package model;
+package request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class HotTea {
+public class BlackTea {
     @JsonProperty("hot_water")
     public String hot_water;
-    @JsonProperty("hot_milk")
-    public String hot_milk;
     @JsonProperty("ginger_syrup")
     public String ginger_syrup;
     @JsonProperty("sugar_syrup")

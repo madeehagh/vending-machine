@@ -1,7 +1,7 @@
-package util;
+package model;
 
 import lombok.Data;
-import model.VendingMachineResponse;
+import response.InventoryResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ public class Inventory {
 
     public Inventory() {}
 
-    public void createInventory(Map<String, String> items) {
+    public boolean createInventory(Map<String, String> items) {
 
         Map<String, Integer> inventoryMap = new HashMap<>();
 
@@ -26,32 +26,33 @@ public class Inventory {
             inventoryMap.put(item, qty);
         }
         inventory.putAll(inventoryMap);
+        return true;
     }
 
-    public VendingMachineResponse updateInventory(Map<String, Integer> items) {
-        VendingMachineResponse vendingMachineResponse = new VendingMachineResponse();
+    public InventoryResponse updateInventory(Map<String, Integer> items) {
+        InventoryResponse inventoryResponse = new InventoryResponse();
         for (Map.Entry<String, Integer> entry : items.entrySet()) {
             String item = entry.getKey();
             int quantity = entry.getValue();
             if (!inventory.containsKey(item)) {
-                vendingMachineResponse.setPrepared(false);
-                vendingMachineResponse.setItemUnavailable(item);
-                return vendingMachineResponse;
+                inventoryResponse.setPrepared(false);
+                inventoryResponse.setItemUnavailable(item);
+                return inventoryResponse;
             }
             else{
 
                 int updateValue = inventory.get(item) - quantity;
                 if (updateValue < 0) {
                     unavailableItems.add(item);
-                    vendingMachineResponse.setPrepared(false);
-                    vendingMachineResponse.setInSufficient(true);
-                    vendingMachineResponse.setItemUnavailable(item);
-                    return vendingMachineResponse;
+                    inventoryResponse.setPrepared(false);
+                    inventoryResponse.setInSufficient(true);
+                    inventoryResponse.setItemUnavailable(item);
+                    return inventoryResponse;
                 }
                 inventory.put(item, updateValue);
+                inventoryResponse.setPrepared(true);
             }
         }
-        vendingMachineResponse.setPrepared(true);
-        return vendingMachineResponse;
+        return inventoryResponse;
     }
 }

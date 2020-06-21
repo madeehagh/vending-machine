@@ -1,7 +1,7 @@
 package handler;
 
-import model.VendingMachineResponse;
+import response.InventoryResponse;
 
 public interface InventryOperation {
-    public VendingMachineResponse updateItem();
+    public InventoryResponse updateItem();
 }

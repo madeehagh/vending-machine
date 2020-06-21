@@ -1,9 +1,8 @@
 package handler;
 
-import enums.Items;
-import model.HotTea;
-import model.VendingMachineResponse;
-import util.Inventory;
+import request.HotTea;
+import response.InventoryResponse;
+import model.Inventory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +17,7 @@ public class HotTeaInventoryOp implements InventryOperation{
     }
 
     @Override
-    public VendingMachineResponse updateItem() {
+    public InventoryResponse updateItem() {
         Map<String, Integer> item = new HashMap<>();
         item.put("hot_water" , Integer.parseInt(hotTea.hot_water));
         item.put("hot_milk", Integer.parseInt(hotTea.hot_milk));

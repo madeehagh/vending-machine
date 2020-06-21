@@ -1,8 +1,8 @@
 package handler;
 
-import model.HotCoffee;
-import model.VendingMachineResponse;
-import util.Inventory;
+import request.HotCoffee;
+import response.InventoryResponse;
+import model.Inventory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +18,7 @@ public class HotCoffeeInventryOp implements InventryOperation{
     }
 
     @Override
-    public VendingMachineResponse updateItem() {
+    public InventoryResponse updateItem() {
         Map<String, Integer> item = new HashMap<>();
         item.put("hot_water" , Integer.parseInt(hotCoffee.hot_water));
         item.put("hot_milk", Integer.parseInt(hotCoffee.hot_milk));

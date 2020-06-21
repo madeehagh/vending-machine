@@ -1,11 +1,12 @@
 package service;
 
-import model.Beverages;
+import request.Beverages;
+import response.VendingMachineResponseWrapper;
 
 import java.util.Map;
 
 public interface VendingMachine {
-    public void setNoOfUnit(int n);
-    public void placeOrder(Beverages beverages);
-    public void createInventory(Map<String, String> inventories);
+    public boolean setNoOfUnit(int n);
+    public VendingMachineResponseWrapper placeOrder(Beverages beverages);
+    public boolean createInventory(Map<String, String> inventories);
 }
